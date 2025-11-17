@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "concurrently \"next dev -p 3000\" \"npx tsx src/server.ts\"",
+    "dev": "concurrently \"next dev -p 3004\" \"npx tsx src/server.ts\"",
     "build": "next build && cp -r .next/static .next/standalone/.next/ && cp -r public .next/standalone/",
     "start": "NODE_ENV=production node .next/standalone/server.js 2>&1 | tee server.log",
     "lint": "next lint",

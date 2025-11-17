@@ -4,7 +4,7 @@ import { Server } from 'socket.io'
 const httpServer = createServer();
 const io = new Server(httpServer, {
   cors: {
-    origin: "http://localhost:3000",
+    origin: "http://localhost:3004",
     methods: ["GET", "POST"]
   }
 });
@@ -36,7 +36,7 @@ io.on("connection", (socket) => {
   forwardEvent("exchange_rate_deleted");
 });
 
-const PORT = 3001;
+const PORT = 3005;
 httpServer.listen(PORT, () => {
   console.log(`Socket.io server is running on port ${PORT}`);
 });
