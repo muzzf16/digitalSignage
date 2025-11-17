@@ -8,13 +8,12 @@ import { ExchangeRate } from '@/lib/types'
 
 type ExchangeRateEditorProps = {
   exchangeRate?: ExchangeRate | null;
-  onSave: (exchangeRate: ExchangeRate) => void;
+  onSave: (exchangeRate: Omit<ExchangeRate, 'id' | 'updatedAt'>) => void;
   onCancel: () => void;
 };
 
 export function ExchangeRateEditor({ exchangeRate, onSave, onCancel }: ExchangeRateEditorProps) {
-  const [formData, setFormData] = useState<ExchangeRate>(exchangeRate || {
-    id: '',
+  const [formData, setFormData] = useState(exchangeRate || {
     currency: '',
     code: '',
     buy: 0,
@@ -22,8 +21,12 @@ export function ExchangeRateEditor({ exchangeRate, onSave, onCancel }: ExchangeR
     change: 0,
     changePercent: 0,
     isActive: true,
-    updatedAt: new Date().toISOString()
   })
+
+  const handleSave = () => {
+    const { id, updatedAt, ...rest } = formData as ExchangeRate;
+    onSave(rest);
+  }
 
   return (
     <div className="space-y-6">
@@ -111,7 +114,7 @@ export function ExchangeRateEditor({ exchangeRate, onSave, onCancel }: ExchangeR
         <Button variant="outline" onClick={onCancel}>
           Batal
         </Button>
-        <Button onClick={() => onSave(formData)}>
+        <Button onClick={handleSave}>
           <Save className="w-4 h-4 mr-2" />
           Simpan
         </Button>

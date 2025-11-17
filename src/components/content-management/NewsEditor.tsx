@@ -10,21 +10,23 @@ import { News } from '@/lib/types'
 
 type NewsEditorProps = {
   newsItem?: News | null;
-  onSave: (newsItem: News) => void;
+  onSave: (newsItem: Omit<News, 'id' | 'createdAt' | 'updatedAt'>) => void;
   onCancel: () => void;
 };
 
 export function NewsEditor({ newsItem, onSave, onCancel }: NewsEditorProps) {
-  const [formData, setFormData] = useState<News>(newsItem || {
-    id: '',
+  const [formData, setFormData] = useState(newsItem || {
     title: '',
     description: '',
     category: 'news',
     date: new Date().toLocaleDateString('id-ID'),
     isActive: true,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
   })
+
+  const handleSave = () => {
+    const { id, createdAt, updatedAt, ...rest } = formData as News;
+    onSave(rest);
+  }
 
   return (
     <div className="space-y-6">
@@ -87,7 +89,7 @@ export function NewsEditor({ newsItem, onSave, onCancel }: NewsEditorProps) {
         <Button variant="outline" onClick={onCancel}>
           Batal
         </Button>
-        <Button onClick={() => onSave(formData)}>
+        <Button onClick={handleSave}>
           <Save className="w-4 h-4 mr-2" />
           Simpan
         </Button>

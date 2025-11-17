@@ -10,14 +10,13 @@ import { Slide } from '@/lib/types'
 
 type SlideEditorProps = {
   slide?: Slide | null;
-  onSave: (slide: Slide) => void;
+  onSave: (slide: Omit<Slide, 'id' | 'createdAt' | 'updatedAt'>) => void;
   onCancel: () => void;
   slides: Slide[];
 };
 
 export function SlideEditor({ slide, onSave, onCancel, slides }: SlideEditorProps) {
-  const [formData, setFormData] = useState<Slide>(slide || {
-    id: '',
+  const [formData, setFormData] = useState(slide || {
     title: '',
     subtitle: '',
     description: '',
@@ -27,23 +26,26 @@ export function SlideEditor({ slide, onSave, onCancel, slides }: SlideEditorProp
     isActive: true,
     order: slides.length + 1,
     category: 'Promo',
-    createdAt: '',
-    updatedAt: ''
   })
 
   const handleFeatureChange = (index: number, value: string) => {
-    const newFeatures = [...formData.features]
+    const newFeatures = [...(formData.features || [])]
     newFeatures[index] = value
     setFormData({ ...formData, features: newFeatures })
   }
 
   const addFeature = () => {
-    setFormData({ ...formData, features: [...formData.features, ''] })
+    setFormData({ ...formData, features: [...(formData.features || []), ''] })
   }
 
   const removeFeature = (index: number) => {
-    const newFeatures = formData.features.filter((_, i) => i !== index)
+    const newFeatures = (formData.features || []).filter((_, i) => i !== index)
     setFormData({ ...formData, features: newFeatures })
+  }
+
+  const handleSave = () => {
+    const { id, createdAt, updatedAt, ...rest } = formData as Slide;
+    onSave(rest);
   }
 
   return (
@@ -83,7 +85,7 @@ export function SlideEditor({ slide, onSave, onCancel, slides }: SlideEditorProp
       <div>
         <Label>Fitur-fitur</Label>
         <div className="space-y-2">
-          {formData.features.map((feature, index) => (
+          {(formData.features || []).map((feature, index) => (
             <div key={index} className="flex items-center space-x-2">
               <Input
                 value={feature}
@@ -95,7 +97,7 @@ export function SlideEditor({ slide, onSave, onCancel, slides }: SlideEditorProp
                 variant="outline"
                 size="sm"
                 onClick={() => removeFeature(index)}
-                disabled={formData.features.length === 1}
+                disabled={(formData.features || []).length === 1}
               >
                 <X className="w-4 h-4" />
               </Button>
@@ -154,7 +156,7 @@ export function SlideEditor({ slide, onSave, onCancel, slides }: SlideEditorProp
         <Button variant="outline" onClick={onCancel}>
           Batal
         </Button>
-        <Button onClick={() => onSave(formData)}>
+        <Button onClick={handleSave}>
           <Save className="w-4 h-4 mr-2" />
           Simpan
         </Button>

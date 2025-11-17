@@ -9,19 +9,22 @@ import { InterestRate } from '@/lib/types'
 
 type RateEditorProps = {
   rate?: InterestRate | null;
-  onSave: (rate: InterestRate) => void;
+  onSave: (rate: Omit<InterestRate, 'id' | 'updatedAt'>) => void;
   onCancel: () => void;
 };
 
 export function RateEditor({ rate, onSave, onCancel }: RateEditorProps) {
-  const [formData, setFormData] = useState<InterestRate>(rate || {
-    id: '',
+  const [formData, setFormData] = useState(rate || {
     type: '',
     rate: '',
     period: 'p.a',
     isActive: true,
-    updatedAt: new Date().toISOString()
   })
+
+  const handleSave = () => {
+    const { id, updatedAt, ...rest } = formData as InterestRate;
+    onSave(rest);
+  }
 
   return (
     <div className="space-y-6">
@@ -73,7 +76,7 @@ export function RateEditor({ rate, onSave, onCancel }: RateEditorProps) {
         <Button variant="outline" onClick={onCancel}>
           Batal
         </Button>
-        <Button onClick={() => onSave(formData)}>
+        <Button onClick={handleSave}>
           <Save className="w-4 h-4 mr-2" />
           Simpan
         </Button>
