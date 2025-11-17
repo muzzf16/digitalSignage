@@ -10,7 +10,7 @@ import { ConfirmationDialog } from './ConfirmationDialog'
 
 type NewsManagerProps = {
   news: News[];
-  onSave: (newsItem: News) => void;
+  onSave: (newsItem: Omit<News, 'id' | 'createdAt' | 'updatedAt'> | News) => void;
   onDelete: (id: string) => void;
   onToggle: (id: string) => void;
 };
@@ -21,8 +21,12 @@ export function NewsManager({ news, onSave, onDelete, onToggle }: NewsManagerPro
   const [isConfirmingDelete, setIsConfirmingDelete] = useState(false)
   const [deletingNewsId, setDeletingNewsId] = useState<string | null>(null)
 
-  const handleSave = (newsItem: News) => {
-    onSave(newsItem)
+  const handleSave = (newsItem: Omit<News, 'id' | 'createdAt' | 'updatedAt'>) => {
+    if (editingNews) {
+      onSave({ ...editingNews, ...newsItem });
+    } else {
+      onSave(newsItem);
+    }
     setIsEditing(false)
     setEditingNews(null)
   }

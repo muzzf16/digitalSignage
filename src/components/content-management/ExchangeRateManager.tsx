@@ -10,7 +10,7 @@ import { ConfirmationDialog } from './ConfirmationDialog'
 
 type ExchangeRateManagerProps = {
   exchangeRates: ExchangeRate[];
-  onSave: (exchangeRate: ExchangeRate) => void;
+  onSave: (exchangeRate: Omit<ExchangeRate, 'id' | 'updatedAt'> | ExchangeRate) => void;
   onDelete: (id: string) => void;
   onToggle: (id: string) => void;
 };
@@ -21,8 +21,12 @@ export function ExchangeRateManager({ exchangeRates, onSave, onDelete, onToggle 
   const [isConfirmingDelete, setIsConfirmingDelete] = useState(false)
   const [deletingExchangeRateId, setDeletingExchangeRateId] = useState<string | null>(null)
 
-  const handleSave = (exchangeRate: ExchangeRate) => {
-    onSave(exchangeRate)
+  const handleSave = (exchangeRate: Omit<ExchangeRate, 'id' | 'updatedAt'>) => {
+    if (editingExchangeRate) {
+      onSave({ ...editingExchangeRate, ...exchangeRate });
+    } else {
+      onSave(exchangeRate);
+    }
     setIsEditing(false)
     setEditingExchangeRate(null)
   }

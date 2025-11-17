@@ -10,7 +10,7 @@ import { ConfirmationDialog } from './ConfirmationDialog'
 
 type RateManagerProps = {
   rates: InterestRate[];
-  onSave: (rate: InterestRate) => void;
+  onSave: (rate: Omit<InterestRate, 'id' | 'updatedAt'> | InterestRate) => void;
   onDelete: (id: string) => void;
   onToggle: (id: string) => void;
 };
@@ -21,8 +21,12 @@ export function RateManager({ rates, onSave, onDelete, onToggle }: RateManagerPr
   const [isConfirmingDelete, setIsConfirmingDelete] = useState(false)
   const [deletingRateId, setDeletingRateId] = useState<string | null>(null)
 
-  const handleSave = (rate: InterestRate) => {
-    onSave(rate)
+  const handleSave = (rate: Omit<InterestRate, 'id' | 'updatedAt'>) => {
+    if (editingRate) {
+      onSave({ ...editingRate, ...rate });
+    } else {
+      onSave(rate);
+    }
     setIsEditing(false)
     setEditingRate(null)
   }

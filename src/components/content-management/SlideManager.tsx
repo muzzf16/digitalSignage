@@ -10,7 +10,7 @@ import { ConfirmationDialog } from './ConfirmationDialog'
 
 type SlideManagerProps = {
   slides: Slide[];
-  onSave: (slide: Slide) => void;
+  onSave: (slide: Omit<Slide, 'id' | 'createdAt' | 'updatedAt'> | Slide) => void;
   onDelete: (id: string) => void;
   onToggle: (id: string) => void;
 };
@@ -21,8 +21,12 @@ export function SlideManager({ slides, onSave, onDelete, onToggle }: SlideManage
   const [isConfirmingDelete, setIsConfirmingDelete] = useState(false)
   const [deletingSlideId, setDeletingSlideId] = useState<string | null>(null)
 
-  const handleSave = (slide: Slide) => {
-    onSave(slide)
+  const handleSave = (slide: Omit<Slide, 'id' | 'createdAt' | 'updatedAt'>) => {
+    if (editingSlide) {
+      onSave({ ...editingSlide, ...slide });
+    } else {
+      onSave(slide);
+    }
     setIsEditing(false)
     setEditingSlide(null)
   }
