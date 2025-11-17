@@ -1,0 +1,70 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model Slide {
+  id              String   @id @default(cuid())
+  title           String
+  subtitle        String?
+  description     String
+  features        String   @default("[]") // JSON string array
+  backgroundColor String
+  textColor       String
+  isActive        Boolean  @default(true)
+  order           Int
+  category        String
+  imageUrl        String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@map("slides")
+}
+
+model InterestRate {
+  id        String   @id @default(cuid())
+  type      String
+  rate      String
+  period    String
+  isActive  Boolean  @default(true)
+  updatedAt DateTime @updatedAt
+
+  @@map("interest_rates")
+}
+
+model News {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  category    String
+  date        String
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("news")
+}
+
+model ExchangeRate {
+  id            String   @id @default(cuid())
+  currency      String
+  code          String
+  buy           Float
+  sell          Float
+  change        Float
+  changePercent Float
+  isActive      Boolean  @default(true)
+  updatedAt     DateTime @updatedAt
+
+  @@map("exchange_rates")
+}
